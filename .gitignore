@@ -38,6 +38,9 @@ coverage/
 /public/assets
 /public/packs
 /public/packs-test
+src/backend/config/master.key
+src/backend/config/credentials.yml.enc
+src/backend/.kamal/secrets
 
 # プロジェクト運用ディレクトリ（ローカル管理）
 .claude/

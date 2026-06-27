@@ -1,0 +1,30 @@
+# 依存関係
+/.bundle
+/vendor/bundle
+
+# ビルド・一時ファイル
+/tmp
+/log
+
+# DB
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Rails secrets（絶対にコミットしない）
+/config/master.key
+/config/credentials.yml.enc
+/config/credentials/*.yml.enc
+
+# Kamal secrets
+/.kamal/secrets
+
+# アセット
+/public/assets
+/public/packs
+/public/packs-test
+
+# OS
+.DS_Store
+Thumbs.db
