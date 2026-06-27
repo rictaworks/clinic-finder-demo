@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database.
-# Use $* to match "rails server" anywhere in the argument string so this
-# works both with direct exec ("./bin/thrust ./bin/rails server") and
-# with Railway's shell-wrapped invocation ("sh -c './bin/thrust ...'").
-if [[ "$*" == *"rails server"* ]]; then
-  ./bin/rails db:prepare
-fi
+# Always prepare the database before starting.
+# db:prepare is idempotent: creates and seeds on first run, migrates on subsequent runs.
+./bin/rails db:prepare
 
 exec "${@}"
