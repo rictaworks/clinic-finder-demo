@@ -23,7 +23,7 @@ class HoneypotGuard
 
   def self.interval_ok?(timestamp)
     return true if timestamp.blank?
-    submitted_at = timestamp.to_f
+    submitted_at = timestamp.to_f / 1000.0
     elapsed = Time.current.to_f - submitted_at
     elapsed >= MIN_INTERVAL_SECONDS
   end
