@@ -11,7 +11,7 @@ class ClinicFilter
     date_from = now.to_date
     date_to = date_from + 6.days
 
-    scope = Clinic.includes(:clinic_departments, :available_slots)
+    scope = Clinic.includes(:area, :clinic_departments, :departments, :available_slots)
     scope = scope.where(area_id: area_id) if area_id.present?
 
     clinics = scope.all
