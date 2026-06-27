@@ -1,7 +1,10 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+# If running the rails server then create or migrate existing database.
+# Use $* to match "rails server" anywhere in the argument string so this
+# works both with direct exec ("./bin/thrust ./bin/rails server") and
+# with Railway's shell-wrapped invocation ("sh -c './bin/thrust ...'").
+if [[ "$*" == *"rails server"* ]]; then
   ./bin/rails db:prepare
 fi
 
