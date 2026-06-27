@@ -25,27 +25,51 @@ export default function ConfirmModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-sm">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 id="confirm-modal-title" className="text-lg font-semibold text-gray-900">{title}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="閉じる">
+    <div
+      style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(0,0,0,0.5)' }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-modal-title"
+    >
+      <div style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', width: '100%', maxWidth: '360px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px 14px', borderBottom: '1px solid var(--border-subtle)' }}>
+          <h2 id="confirm-modal-title" style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>{title}</h2>
+          <button onClick={onClose} aria-label="閉じる" style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', fontSize: '16px', padding: '4px' }}>
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
-        <div className="px-6 py-4">
-          <p className="text-sm text-gray-700">{message}</p>
+        <div style={{ padding: '16px 20px' }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>{message}</p>
         </div>
-        <div className="flex gap-3 px-6 py-4 border-t border-gray-200">
+        <div style={{ display: 'flex', gap: '10px', padding: '12px 20px 20px', borderTop: '1px solid var(--border-subtle)' }}>
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+            style={{
+              flex: 1,
+              padding: '10px',
+              background: '#fff',
+              border: '1px solid var(--border-default)',
+              borderRadius: '6px',
+              color: 'var(--text-secondary)',
+              fontSize: '14px',
+              cursor: 'pointer',
+            }}
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
+            style={{
+              flex: 1,
+              padding: '10px',
+              background: '#c84030',
+              border: 'none',
+              borderRadius: '6px',
+              color: '#fff',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
           >
             {confirmLabel}
           </button>

@@ -17,17 +17,49 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="min-h-screen bg-gray-50 font-sans">
-        <header className="bg-white border-b border-gray-200 shadow-sm">
-          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-blue-600" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 3a1 1 0 011 1v3h3a1 1 0 010 2h-3v3a1 1 0 01-2 0v-3H8a1 1 0 010-2h3V7a1 1 0 011-1z"/>
-            </svg>
-            <span className="text-xl font-bold text-blue-700 tracking-tight">Clinic Finder</span>
-            <span className="text-xs text-gray-400 ml-1 mt-1">Demo</span>
+      <body>
+        <nav style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: 'var(--color-navy-700)',
+          height: '60px',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+        }}>
+          <div style={{
+            maxWidth: '880px',
+            margin: '0 auto',
+            padding: '0 24px',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <a href="/" style={{
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: '15px',
+              letterSpacing: '0.04em',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              userSelect: 'none',
+            }}>
+              <span style={{ color: 'var(--color-navy-300)', fontSize: '18px' }}>✦</span>
+              クリニックファインダー
+            </a>
           </div>
-        </header>
-        <main className="max-w-4xl mx-auto px-4 py-8">
+        </nav>
+        <main style={{
+          paddingTop: '60px',
+          minHeight: '100vh',
+          maxWidth: '880px',
+          margin: '0 auto',
+          padding: '60px 24px 64px',
+        }}>
           {children}
         </main>
       </body>

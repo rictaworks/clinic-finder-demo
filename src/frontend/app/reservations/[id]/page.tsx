@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faSpinner, faCheckCircle, faXmarkCircle } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { api } from '@/lib/api'
 import ConfirmModal from '@/components/ConfirmModal'
 import ErrorMessage from '@/components/ErrorMessage'
@@ -14,6 +14,25 @@ import type { Reservation } from '@/types'
 function findAgeGroupLabel(value: string): string {
   const found = AGE_GROUPS.find((g) => g.value === value)
   return found ? found.label : value
+}
+
+const backLinkStyle: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  color: 'var(--text-tertiary)',
+  fontSize: '14px',
+  cursor: 'pointer',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '5px',
+  padding: 0,
+  textDecoration: 'none',
+}
+
+const detailRowStyle: React.CSSProperties = {
+  display: 'flex',
+  gap: '16px',
+  fontSize: '14px',
 }
 
 export default function ReservationPage() {
@@ -62,91 +81,115 @@ export default function ReservationPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <FontAwesomeIcon icon={faSpinner} spin className="text-blue-500 text-3xl" />
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
+        <FontAwesomeIcon icon={faSpinner} spin style={{ color: 'var(--color-navy-500)', fontSize: '28px' }} />
       </div>
     )
   }
 
   if (error || !reservation) {
     return (
-      <div>
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 mb-4">
-          <FontAwesomeIcon icon={faArrowLeft} />
-          トップに戻る
-        </Link>
-        <ErrorMessage message={error || ERROR_MESSAGES.GENERAL} />
+      <div style={{ paddingTop: '16px' }}>
+        <Link href="/" style={backLinkStyle}>トップに戻る</Link>
+        <div style={{ marginTop: '16px' }}>
+          <ErrorMessage message={error || ERROR_MESSAGES.GENERAL} />
+        </div>
       </div>
     )
   }
 
+  const isCancelled = reservation.status === 'cancelled' || cancelDone
+
   return (
-    <div>
-      <div className="mb-6">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 transition-colors">
-          <FontAwesomeIcon icon={faArrowLeft} />
-          トップに戻る
-        </Link>
+    <div style={{ paddingTop: '16px' }}>
+      {/* 完了 / キャンセル完了カード */}
+      <div style={{
+        background: '#fff',
+        border: '1px solid var(--border-default)',
+        borderRadius: '12px',
+        padding: '32px 24px',
+        marginBottom: '16px',
+        textAlign: 'center',
+      }}>
+        <div style={{ fontSize: '48px', marginBottom: '12px', color: isCancelled ? 'var(--text-tertiary)' : 'var(--color-navy-600)' }}>
+          <FontAwesomeIcon icon={isCancelled ? faCircleXmark : faCircleCheck} />
+        </div>
+        <h1 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+          {isCancelled ? '予約をキャンセルしました' : '予約が完了しました'}
+        </h1>
+        <div style={{ fontSize: '13px', color: 'var(--text-tertiary)', marginBottom: '24px' }}>
+          予約ID: {reservation.id}
+        </div>
+
+        <div style={{ textAlign: 'left', borderTop: '1px solid var(--border-subtle)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={detailRowStyle}>
+            <span style={{ color: 'var(--text-tertiary)', width: '80px', flexShrink: 0 }}>クリニック</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{reservation.clinic.name}</span>
+          </div>
+          <div style={detailRowStyle}>
+            <span style={{ color: 'var(--text-tertiary)', width: '80px', flexShrink: 0 }}>エリア</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{reservation.clinic.area.name}</span>
+          </div>
+          <div style={detailRowStyle}>
+            <span style={{ color: 'var(--text-tertiary)', width: '80px', flexShrink: 0 }}>日時</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
+              {reservation.slot.slot_date}　{reservation.slot.slot_time}
+            </span>
+          </div>
+          <div style={detailRowStyle}>
+            <span style={{ color: 'var(--text-tertiary)', width: '80px', flexShrink: 0 }}>年齢層</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{findAgeGroupLabel(reservation.age_group)}</span>
+          </div>
+        </div>
+
+        <p style={{ fontSize: '12px', color: 'var(--text-tertiary)', marginTop: '20px', lineHeight: 1.6, textAlign: 'left' }}>
+          ※ このデモ版の予約データはJST 03:00に自動リセットされます。実際の受診については各クリニックへ直接お問い合わせください。
+        </p>
       </div>
 
-      {cancelDone && (
-        <div className="mb-4 flex items-center gap-2 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
-          <FontAwesomeIcon icon={faXmarkCircle} className="text-gray-500" />
-          <span>予約がキャンセルされました。</span>
-        </div>
-      )}
-
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <FontAwesomeIcon
-            icon={faCheckCircle}
-            className={reservation.status === 'pending' ? 'text-green-500 text-xl' : 'text-gray-400 text-xl'}
-          />
-          <h1 className="text-2xl font-bold text-gray-900">
-            {reservation.status === 'pending' ? '予約確認' : 'キャンセル済み'}
-          </h1>
-        </div>
-
-        <div className="space-y-3 text-sm">
-          <div className="flex gap-4">
-            <span className="w-28 text-gray-500 flex-shrink-0">クリニック名</span>
-            <span className="font-medium text-gray-900">{reservation.clinic.name}</span>
-          </div>
-          <div className="flex gap-4">
-            <span className="w-28 text-gray-500 flex-shrink-0">予約日時</span>
-            <span className="font-medium text-gray-900">
-              {reservation.slot.slot_date} {reservation.slot.slot_time}
-            </span>
-          </div>
-          <div className="flex gap-4">
-            <span className="w-28 text-gray-500 flex-shrink-0">年齢層</span>
-            <span className="font-medium text-gray-900">{findAgeGroupLabel(reservation.age_group)}</span>
-          </div>
-          {reservation.symptom_note && (
-            <div className="flex gap-4">
-              <span className="w-28 text-gray-500 flex-shrink-0">症状メモ</span>
-              <span className="text-gray-700">{reservation.symptom_note}</span>
-            </div>
-          )}
-          <div className="flex gap-4">
-            <span className="w-28 text-gray-500 flex-shrink-0">ステータス</span>
-            <span className={`font-medium ${reservation.status === 'pending' ? 'text-green-600' : 'text-gray-500'}`}>
-              {reservation.status === 'pending' ? '仮予約中' : 'キャンセル済み'}
-            </span>
-          </div>
-        </div>
-
-        {reservation.status === 'pending' && !cancelDone && (
-          <div className="mt-8 pt-4 border-t border-gray-200">
-            <button
-              onClick={() => setIsConfirmOpen(true)}
-              disabled={cancelLoading}
-              className="px-6 py-2.5 border border-red-300 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
-            >
-              {cancelLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : 'キャンセルする'}
-            </button>
-          </div>
+      {/* ボタン群 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {!isCancelled && (
+          <button
+            onClick={() => setIsConfirmOpen(true)}
+            disabled={cancelLoading}
+            style={{
+              background: 'transparent',
+              color: '#c84030',
+              border: '1px solid #c84030',
+              borderRadius: '6px',
+              padding: '12px 24px',
+              fontSize: '15px',
+              fontWeight: 500,
+              cursor: cancelLoading ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              width: '100%',
+            }}
+          >
+            {cancelLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : 'この予約をキャンセルする'}
+          </button>
         )}
+        <Link href="/" style={{
+          background: '#fff',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border-default)',
+          borderRadius: '6px',
+          padding: '12px 24px',
+          fontSize: '15px',
+          fontWeight: 500,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          width: '100%',
+          textDecoration: 'none',
+        }}>
+          トップに戻る
+        </Link>
       </div>
 
       <ConfirmModal

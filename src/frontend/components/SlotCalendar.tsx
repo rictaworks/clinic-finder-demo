@@ -27,47 +27,50 @@ export default function SlotCalendar({ slots, onSelectSlot }: SlotCalendarProps)
 
   if (dates.length === 0) {
     return (
-      <p className="text-gray-500 text-sm py-4 text-center">空き枠がありません</p>
+      <p style={{ color: 'var(--text-tertiary)', fontSize: '14px', padding: '16px 0', textAlign: 'center' }}>
+        空き枠がありません
+      </p>
     )
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
-        <thead>
-          <tr>
-            {dates.map((date) => (
-              <th key={date} className="border border-gray-200 px-3 py-2 bg-gray-50 text-center font-medium text-gray-700">
-                {formatDate(date)}
-              </th>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {dates.map((date) => (
+        <div key={date}>
+          <div style={{
+            fontSize: '13px',
+            fontWeight: 600,
+            color: 'var(--text-secondary)',
+            marginBottom: '8px',
+          }}>
+            {formatDate(date)}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {grouped[date].map((slot) => (
+              <div key={slot.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>{slot.slot_time}</div>
+                <button
+                  onClick={() => slot.status === 'open' && onSelectSlot(slot)}
+                  disabled={slot.status !== 'open'}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    border: slot.status === 'open' ? '1px solid var(--color-navy-600)' : '1px solid var(--border-default)',
+                    background: slot.status === 'open' ? 'var(--color-navy-700)' : 'var(--surface-subtle)',
+                    color: slot.status === 'open' ? '#fff' : 'var(--text-tertiary)',
+                    cursor: slot.status === 'open' ? 'pointer' : 'not-allowed',
+                    textDecoration: slot.status !== 'open' ? 'line-through' : 'none',
+                  }}
+                >
+                  {slot.status === 'open' ? '予約する' : '満席'}
+                </button>
+              </div>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {dates.map((date) => (
-              <td key={date} className="border border-gray-200 px-2 py-2 align-top">
-                <div className="flex flex-col gap-1">
-                  {grouped[date].map((slot) => (
-                    <button
-                      key={slot.id}
-                      onClick={() => slot.status === 'open' && onSelectSlot(slot)}
-                      disabled={slot.status !== 'open'}
-                      className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                        slot.status === 'open'
-                          ? 'bg-green-100 text-green-800 hover:bg-green-200 cursor-pointer'
-                          : 'bg-gray-100 text-gray-400 cursor-not-allowed line-through'
-                      }`}
-                    >
-                      {slot.slot_time}
-                    </button>
-                  ))}
-                </div>
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
