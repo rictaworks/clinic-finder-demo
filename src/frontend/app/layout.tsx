@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHospital } from '@fortawesome/free-solid-svg-icons'
 import './globals.css'
 
 config.autoAddCss = false
@@ -48,7 +50,7 @@ export default function RootLayout({
               gap: '8px',
               userSelect: 'none',
             }}>
-              <span style={{ color: 'var(--color-navy-300)', fontSize: '18px' }}>✦</span>
+              <FontAwesomeIcon icon={faHospital} style={{ color: 'var(--color-navy-300)', fontSize: '16px' }} />
               クリニックファインダー
             </a>
           </div>

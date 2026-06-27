@@ -85,15 +85,6 @@ export default function HomePage() {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        <div style={{
-          position: 'absolute',
-          right: '32px',
-          bottom: '-16px',
-          fontSize: '120px',
-          color: 'rgba(255,255,255,0.03)',
-          lineHeight: 1,
-          pointerEvents: 'none',
-        }}>✦</div>
         <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-navy-300)', marginBottom: '12px' }}>
           Clinic Finder — Demo
         </p>
