@@ -6,7 +6,8 @@ module Api
         'clinic_session_id',
         value: session_id,
         httponly: true,
-        same_site: :lax,
+        same_site: :none,
+        secure: true,
         expires: 24.hours.from_now
       )
       render json: { session_id: session_id }, status: :created
