@@ -14,9 +14,9 @@ module Api
         rating: clinic.rating,
         open_time: clinic.open_time,
         close_time: clinic.close_time,
-        area: { id: clinic.area.id, name: clinic.area.name },
+        area: { id: clinic.area.id, name: clinic.area.name, en_name: clinic.area.en_name },
         departments: clinic.departments.map { |d| { id: d.id, name: d.name } },
-        available_slots: slots.map { |s|
+        slots: slots.map { |s|
           {
             id: s.id,
             slot_date: s.slot_date,
