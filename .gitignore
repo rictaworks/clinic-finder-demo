@@ -1,0 +1,51 @@
+# 個人設定
+CLAUDE.local.md
+
+# 環境変数
+.env
+.env.local
+.env.*.local
+
+# 依存関係
+node_modules/
+vendor/bundle/
+
+# ビルド成果物
+.next/
+out/
+tmp/
+log/
+
+# DB
+*.sqlite3
+*.sqlite3-journal
+
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# テスト
+coverage/
+.nyc_output/
+
+# Rails
+/public/assets
+/public/packs
+/public/packs-test
+
+# プロジェクト運用ディレクトリ（ローカル管理）
+.claude/
+CLIENT/
+DEBUG/
+DELETE/
+ENV/
+TASKS/
+WORK/
+app-ui/
+clinic-finder-demo-spec.md
