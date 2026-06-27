@@ -59,6 +59,6 @@ export interface ReservationData {
   slot_id: number
   age_group: string
   symptom_note: string
-  hp_field: string
+  website: string
   submitted_at: number
 }

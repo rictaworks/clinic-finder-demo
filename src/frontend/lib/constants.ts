@@ -5,6 +5,19 @@ export const AGE_GROUPS = [
   { value: 'senior', label: '60代以上' },
 ] as const
 
+export const AREAS = [
+  { value: '渋谷', label: '渋谷' },
+  { value: '新宿', label: '新宿' },
+  { value: '池袋', label: '池袋' },
+  { value: '品川', label: '品川' },
+  { value: '銀座', label: '銀座' },
+  { value: '上野', label: '上野' },
+  { value: '秋葉原', label: '秋葉原' },
+  { value: '吉祥寺', label: '吉祥寺' },
+  { value: '横浜', label: '横浜' },
+  { value: '川崎', label: '川崎' },
+] as const
+
 export const HONEYPOT_MIN_INTERVAL_MS = 2000
 
 export const SLOT_STATUS = {

@@ -4,12 +4,25 @@ import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { api } from '@/lib/api'
 import ClinicCard from '@/components/ClinicCard'
 import ErrorMessage from '@/components/ErrorMessage'
 import { ERROR_MESSAGES } from '@/lib/constants'
 import type { SearchResult } from '@/types'
+
+const backLinkStyle: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  color: 'var(--text-tertiary)',
+  fontSize: '14px',
+  cursor: 'pointer',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '5px',
+  padding: 0,
+  textDecoration: 'none',
+}
 
 function SearchResults() {
   const searchParams = useSearchParams()
@@ -47,8 +60,8 @@ function SearchResults() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-16">
-        <FontAwesomeIcon icon={faSpinner} spin className="text-blue-500 text-3xl" />
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
+        <FontAwesomeIcon icon={faSpinner} spin style={{ color: 'var(--color-navy-500)', fontSize: '28px' }} />
       </div>
     )
   }
@@ -57,17 +70,30 @@ function SearchResults() {
     return <ErrorMessage message={error} />
   }
 
+  const summary = [symptom && `「${symptom}」`, area && area].filter(Boolean).join(' / ')
+
   return (
     <>
-      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-        <strong>検索条件:</strong> 症状「{symptom}」、地域「{area}」{hasSlot && '、空き枠あり'}
-        &nbsp;&mdash;&nbsp;<strong>{results.length}件</strong>見つかりました
-      </div>
+      <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+        {results.length}件見つかりました
+        {summary && <span style={{ color: 'var(--text-tertiary)' }}> — {summary}</span>}
+      </p>
 
       {results.length === 0 ? (
-        <p className="text-center text-gray-500 py-12">条件に一致するクリニックが見つかりませんでした。</p>
+        <div style={{
+          background: '#fff',
+          border: '1px solid var(--border-default)',
+          borderRadius: '12px',
+          padding: '32px',
+          textAlign: 'center',
+          color: 'var(--text-tertiary)',
+          fontSize: '14px',
+        }}>
+          <p>条件に合うクリニックが見つかりませんでした。</p>
+          <p style={{ marginTop: '8px', fontSize: '12.5px' }}>エリアや症状の条件を変えてお試しください。</p>
+        </div>
       ) : (
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {results.map((result) => (
             <ClinicCard key={result.clinic.id} result={result} />
           ))}
@@ -79,17 +105,24 @@ function SearchResults() {
 
 export default function SearchPage() {
   return (
-    <div>
-      <div className="mb-6">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 transition-colors">
-          <FontAwesomeIcon icon={faArrowLeft} />
+    <div style={{ paddingTop: '16px' }}>
+      <div style={{
+        paddingBottom: '16px',
+        borderBottom: '1px solid var(--border-subtle)',
+        marginBottom: '24px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+      }}>
+        <Link href="/" style={backLinkStyle}>
+          <FontAwesomeIcon icon={faChevronLeft} />
           検索に戻る
         </Link>
       </div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">検索結果</h1>
+
       <Suspense fallback={
-        <div className="flex justify-center py-16">
-          <FontAwesomeIcon icon={faSpinner} spin className="text-blue-500 text-3xl" />
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
+          <FontAwesomeIcon icon={faSpinner} spin style={{ color: 'var(--color-navy-500)', fontSize: '28px' }} />
         </div>
       }>
         <SearchResults />
