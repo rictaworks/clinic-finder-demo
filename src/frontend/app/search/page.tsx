@@ -47,8 +47,8 @@ function SearchResults() {
         if (!res.ok) throw new Error(`Search failed: ${res.status}`)
         return res.json()
       })
-      .then((data: SearchResult[]) => {
-        setResults(data)
+      .then((data: { clinics: SearchResult[] }) => {
+        setResults(data.clinics ?? [])
       })
       .catch(() => {
         setError(ERROR_MESSAGES.NETWORK)
