@@ -19,29 +19,28 @@ describe('useSession', () => {
     })
     const { result } = renderHook(() => useSession())
     await act(async () => {})
-    expect(result.current.sessionId).toBe('existing-id')
+    expect(result.current.ready).toBe(true)
     expect(fetch).not.toHaveBeenCalled()
   })
 
-  it('Cookieがない場合はPOST /api/sessions を呼ぶ', async () => {
-    ;(fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ session_id: 'new-session-id' }),
-    })
+  it('Cookieがない場合はPOST /api/sessions を呼び、本文を読まずに ready にする', async () => {
+    const json = jest.fn()
+    ;(fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json })
     const { result } = renderHook(() => useSession())
     await act(async () => {})
     expect(fetch).toHaveBeenCalledWith(
       expect.stringContaining('/api/sessions'),
       expect.objectContaining({ method: 'POST' })
     )
-    expect(result.current.sessionId).toBe('new-session-id')
+    expect(json).not.toHaveBeenCalled()
+    expect(result.current.ready).toBe(true)
   })
 
-  it('APIエラー時にerrorをセットする', async () => {
+  it('APIエラー時にerrorをセットし、readyにはしない', async () => {
     ;(fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'))
     const { result } = renderHook(() => useSession())
     await act(async () => {})
     expect(result.current.error).toBeTruthy()
-    expect(result.current.sessionId).toBeNull()
+    expect(result.current.ready).toBe(false)
   })
 })

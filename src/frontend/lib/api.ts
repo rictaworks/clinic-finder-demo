@@ -1,6 +1,7 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
-
 import type { SearchParams, ReservationData } from '@/types'
+import { API_BASE_URL } from '@/lib/constants'
+
+const API_BASE = API_BASE_URL
 
 export const api = {
   createSession: (): Promise<Response> =>

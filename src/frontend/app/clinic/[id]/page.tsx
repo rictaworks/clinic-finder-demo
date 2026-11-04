@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faSpinner, faPhone, faLocationDot, faClock } from '@fortawesome/free-solid-svg-icons'
@@ -10,7 +10,8 @@ import StarRating from '@/components/StarRating'
 import SlotCalendar from '@/components/SlotCalendar'
 import ReservationModal from '@/components/ReservationModal'
 import ErrorMessage from '@/components/ErrorMessage'
-import { ERROR_MESSAGES } from '@/lib/constants'
+import { CLINIC_PATH_PREFIX, ERROR_MESSAGES } from '@/lib/constants'
+import { useDetailId, useIsHydrated } from '@/lib/routing'
 import type { ClinicDetail, Slot } from '@/types'
 
 const backLinkStyle: React.CSSProperties = {
@@ -43,9 +44,9 @@ const metaRowStyle: React.CSSProperties = {
 }
 
 export default function ClinicDetailPage() {
-  const params = useParams()
   const router = useRouter()
-  const clinicId = Number(params.id)
+  const clinicId = useDetailId(CLINIC_PATH_PREFIX)
+  const hydrated = useIsHydrated()
 
   const [clinic, setClinic] = useState<ClinicDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -54,6 +55,7 @@ export default function ClinicDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
+    if (clinicId === null) return
     api
       .getClinic(clinicId)
       .then((res) => {
@@ -77,7 +79,7 @@ export default function ClinicDetailPage() {
   }
 
   async function handleConfirmReservation(ageGroup: string, symptomNote: string, submittedAt: number) {
-    if (!selectedSlot) return
+    if (!selectedSlot || clinicId === null) return
     const res = await api.createReservation({
       clinic_id: clinicId,
       slot_id: selectedSlot.id,
@@ -100,7 +102,18 @@ export default function ClinicDetailPage() {
     router.push(`/reservations/${data.id}`)
   }
 
-  if (loading) {
+  if (hydrated && clinicId === null) {
+    return (
+      <div style={{ paddingTop: '16px' }}>
+        <Link href="/search" style={backLinkStyle}>検索に戻る</Link>
+        <div style={{ marginTop: '16px' }}>
+          <ErrorMessage message={ERROR_MESSAGES.NOT_FOUND} />
+        </div>
+      </div>
+    )
+  }
+
+  if (!hydrated || loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
         <FontAwesomeIcon icon={faSpinner} spin style={{ color: 'var(--color-navy-500)', fontSize: '28px' }} />

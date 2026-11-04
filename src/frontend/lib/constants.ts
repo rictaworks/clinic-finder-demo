@@ -20,6 +20,15 @@ export const AREAS = [
 
 export const HONEYPOT_MIN_INTERVAL_MS = 2000
 
+/** API の基準パス。Workers Assets と Worker API は同じオリジンなので空（相対パス）。 */
+export const API_BASE_URL = ''
+
+/** 詳細ページの静的シェル ID（書き出しは 1 枚だけ）。実際の ID は URL から読む。 */
+export const DETAIL_SHELL_ID = '_'
+
+export const CLINIC_PATH_PREFIX = '/clinic/'
+export const RESERVATION_PATH_PREFIX = '/reservations/'
+
 export const SLOT_STATUS = {
   OPEN: 'open',
   RESERVED: 'reserved',
@@ -36,4 +45,5 @@ export const ERROR_MESSAGES = {
   GENERAL: 'エラーが発生しました。しばらくしてから再試行してください。',
   HONEYPOT: 'フォームの送信が早すぎます。しばらくしてから再試行してください。',
   DOUBLE_BOOKING: 'この日はすでに予約があります。別の日をお選びください。',
+  NOT_FOUND: 'ページが見つかりませんでした。URL を確認してください。',
 } as const

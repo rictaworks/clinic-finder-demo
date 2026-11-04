@@ -1,0 +1,64 @@
+{
+  // Cloudflare Workers（Hono API）+ Workers Assets（Next.js 静的書き出し）+ D1。
+  // 移行元: Railway（Rails API）と Vercel（Next.js）。Issue #18。
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "clinic-finder-demo",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "account_id": "9c5183bedab008ccef3581056752fa6f",
+  "observability": {
+    "enabled": true
+  },
+  // APP_ENV は既定で本番扱い（Cookie に Secure を付ける）。ローカル開発だけ .dev.vars（gitignore 済み）に APP_ENV=development を書く。
+  "vars": {
+    "APP_ENV": "production"
+  },
+  // D1 の database_id は未作成のためプレースホルダ。作成後に差し替える（報告参照）。
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "clinic_finder_demo",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // 静的書き出しの出力先（npm run build --prefix src/frontend）。
+  // /api/* と /health と詳細ページ（/clinic/:id, /reservations/:id）だけ Worker を先に実行する。
+  "assets": {
+    "directory": "./src/frontend/out",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/health", "/clinic/*", "/reservations/*"]
+  },
+  // JST 03:00 = UTC 18:00 の日次リセット（src/backend の whenever と同じ時刻）。
+  "triggers": {
+    "crons": ["0 18 * * *"]
+  },
+  "env": {
+    "production": {
+      "name": "clinic-finder-demo",
+      "vars": {
+        "APP_ENV": "production"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "clinic_finder_demo",
+          "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "assets": {
+        "directory": "./src/frontend/out",
+        "binding": "ASSETS",
+        "html_handling": "auto-trailing-slash",
+        "not_found_handling": "404-page",
+        "run_worker_first": ["/api/*", "/health", "/clinic/*", "/reservations/*"]
+      },
+      "triggers": {
+        "crons": ["0 18 * * *"]
+      }
+    }
+  }
+}
