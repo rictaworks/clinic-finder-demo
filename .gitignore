@@ -52,3 +52,8 @@ TASKS/
 WORK/
 app-ui/
 clinic-finder-demo-spec.md
+
+# Cloudflare Workers（ローカル状態・シークレット）
+.wrangler/
+.dev.vars
+.dev.vars.*

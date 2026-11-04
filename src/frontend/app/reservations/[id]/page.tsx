@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner, faCircleCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { api } from '@/lib/api'
 import ConfirmModal from '@/components/ConfirmModal'
 import ErrorMessage from '@/components/ErrorMessage'
-import { ERROR_MESSAGES, AGE_GROUPS } from '@/lib/constants'
+import { ERROR_MESSAGES, AGE_GROUPS, RESERVATION_PATH_PREFIX } from '@/lib/constants'
+import { useDetailId, useIsHydrated } from '@/lib/routing'
 import type { Reservation } from '@/types'
 
 function findAgeGroupLabel(value: string): string {
@@ -36,8 +36,8 @@ const detailRowStyle: React.CSSProperties = {
 }
 
 export default function ReservationPage() {
-  const params = useParams()
-  const reservationId = Number(params.id)
+  const reservationId = useDetailId(RESERVATION_PATH_PREFIX)
+  const hydrated = useIsHydrated()
 
   const [reservation, setReservation] = useState<Reservation | null>(null)
   const [loading, setLoading] = useState(true)
@@ -47,6 +47,7 @@ export default function ReservationPage() {
   const [cancelDone, setCancelDone] = useState(false)
 
   useEffect(() => {
+    if (reservationId === null) return
     api
       .getReservation(reservationId)
       .then((res) => {
@@ -65,6 +66,7 @@ export default function ReservationPage() {
   }, [reservationId])
 
   async function handleCancel() {
+    if (reservationId === null) return
     setIsConfirmOpen(false)
     setCancelLoading(true)
     try {
@@ -79,7 +81,18 @@ export default function ReservationPage() {
     }
   }
 
-  if (loading) {
+  if (hydrated && reservationId === null) {
+    return (
+      <div style={{ paddingTop: '16px' }}>
+        <Link href="/" style={backLinkStyle}>トップに戻る</Link>
+        <div style={{ marginTop: '16px' }}>
+          <ErrorMessage message={ERROR_MESSAGES.NOT_FOUND} />
+        </div>
+      </div>
+    )
+  }
+
+  if (!hydrated || loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
         <FontAwesomeIcon icon={faSpinner} spin style={{ color: 'var(--color-navy-500)', fontSize: '28px' }} />
